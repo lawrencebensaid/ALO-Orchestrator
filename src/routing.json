@@ -1,0 +1,31 @@
+{
+  "endpoints": {
+    "GET /": "AuthenticationController.status",
+    "GET /file/:id": { "AuthenticationController.file": ["Auth"] },
+    "POST /auth": "AuthenticationController.authenticate",
+    "GET /my/profile": { "AuthenticationController.myProfile": ["Auth"] },
+    "GET /my/login": { "AuthenticationController.myLogin": ["Auth"] },
+    "DELETE /my/login/:id": { "AuthenticationController.myLoginDelete": ["Auth"] },
+    "GET /my/grade": { "GradeController.myIndex": ["Auth"] },
+    "GET /my/group": { "GroupController.myIndex": ["Auth"] },
+    "PUT /my/group": { "GroupController.myUpdate": ["Auth"] },
+    "GET /my/course": { "CourseController.myIndex": ["Auth"] },
+    "GET /my/course/:id": { "CourseController.myShow": ["Auth"] },
+    "GET /my/schedule": { "EventController.mySchedule": ["Auth"] },
+    "GET /my/schedule/ical": { "EventController.ical": ["Auth"] },
+    "GET /course": "CourseController.index",
+    "GET /course/:id": { "CourseController.show": ["OptionalAuth"] },
+    "GET /course/:id/thumbnail": { "CourseController.thumbnail": ["OptionalAuth"] },
+    "GET /course/search/:query": "CourseController.search",
+    "GET /event": { "EventController.index": ["OptionalAuth"] },
+    "GET /event/search/:query": { "EventController.search": ["OptionalAuth"] },
+    "GET /group": { "GroupController.index": ["OptionalAuth"] },
+    "GET /group/:id": { "GroupController.show": ["OptionalAuth"] },
+    "GET /group/:id/event": { "EventController.byClass": ["OptionalAuth"] },
+    "GET /group/:id/event/ical": "EventController.ical",
+    "GET /group/search/:query": "GroupController.search",
+    "GET /study": { "StudyController.index": ["OptionalAuth"] },
+    "GET /study/:id": { "StudyController.show": ["OptionalAuth"] },
+    "GET /study/search/:query": "StudyController.search"
+  }
+}

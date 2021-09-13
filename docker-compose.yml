@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  # api:
+  #   build: .
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - SECRET=54ea44af904344bdba8f4bd37c6f0fa5
+  #     - WEB_PORT=3000
+  #     - WEB_DOMAIN=localhost
+  #     - PROD_WEB_DOMAIN=api.windesheim.dev
+  #     - DBMS_HOST=db
+  #     - DBMS_USER=windesheim
+  #     - DBMS_REALM=mongodb
+  #     - DBMS_PASSWORD=ab1fec5567ef4e7dedab97b9e4
+  #   depends_on:
+  #     - db
+  #   volumes: 
+  #     - ./debug:/app-container
+  db:
+    image: mongo:5.0.2
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=windesheim
+      - MONGO_INITDB_ROOT_PASSWORD=ab1fec5567ef4e7dedab97b9e4
+      - MONGO_INITDB_DATABASE=windesheim-api

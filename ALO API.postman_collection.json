@@ -1,0 +1,743 @@
+{
+	"info": {
+		"_postman_id": "47501cb7-c553-487b-a7ad-1ab6773f65b3",
+		"name": "ALO API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "File",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/file/{{file_id}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"file",
+						"{{file_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2f4add59-9597-4606-bb70-d4f571bd3dd9",
+						"exec": [
+							"const body = JSON.parse(responseBody) || {};",
+							"if (body.token) pm.environment.set(\"auth_bearer\", body.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\",\n    \"publicKey\": \"{{public_key}}\",\n    \"origin\": \"86.95.77.40\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/auth",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/profile",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Logins",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/login",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Logins",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/login/{{login_id}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"login",
+						"{{login_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Courses",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/course",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"course"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Course",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/course/{{course_id}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"course",
+						"{{course_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Grades",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/grade",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"grade"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Groups",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/group",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "My Groups",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"groups\": [\"ICTOOSDDb\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/my/group",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"my",
+						"group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Courses",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/course",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"course"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Course",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/course/{{course_id}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"course",
+						"{{course_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Course thumbnail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/course/{{course_id}}/thumbnail",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"course",
+						"{{course_id}}",
+						"thumbnail"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Course search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/course/search/{{course_search}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"course",
+						"search",
+						"{{course_search}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Events",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/event",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Events Search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/event/search/{{event_search}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"event",
+						"search",
+						"{{event_search}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Groups",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/group",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Group",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/group/{{class_id}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"group",
+						"{{class_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Group Events",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/group/{{class_id}}/event",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"group",
+						"{{class_id}}",
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Group Events iCal",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/group/{{class_id}}/event/ical",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"group",
+						"{{class_id}}",
+						"event",
+						"ical"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Group search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/group/search/{{class_search}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"group",
+						"search",
+						"{{class_search}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Studies",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/study",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"study"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Study",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/study/{{study_id}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"study",
+						"{{study_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Study search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri_scheme}}://{{uri_authority}}/study/search/{{study_search}}",
+					"protocol": "{{uri_scheme}}",
+					"host": [
+						"{{uri_authority}}"
+					],
+					"path": [
+						"study",
+						"search",
+						"{{study_search}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
