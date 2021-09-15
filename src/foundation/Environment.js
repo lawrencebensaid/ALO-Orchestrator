@@ -16,11 +16,11 @@ class Environment {
    * @param {String?} webHost 
    * @param {Number?} webPort 
    * @param {String?} devWebDomain 
+   * @param {String?} dbmsName 
    * @param {String?} dbmsHost 
    * @param {Number?} dbmsPort 
    * @param {String?} dbmsUser 
    * @param {String?} dbmsPassword 
-   * @param {String} dbmsDatabase 
    * @param {String} dbmsRealm 
    */
   constructor({
@@ -32,11 +32,11 @@ class Environment {
     webPort,
     devWebDomain,
     prodWebDomain,
+    dbmsName,
     dbmsHost,
     dbmsPort,
     dbmsUser,
     dbmsPassword,
-    dbmsDatabase,
     dbmsRealm
   }) {
     this.name = name || (devWebDomain ? "Production" : "Development");
@@ -52,9 +52,9 @@ class Environment {
     if (prodWebDomain) {
       this.siblings.push(new Environment({ name: "Production", webDomain: prodWebDomain }));
     }
+    this.dbmsName = dbmsName || "alo-api";
     this.dbmsHost = dbmsHost || "localhost";
     this.dbmsPassword = dbmsPassword;
-    this.dbmsDatabase = dbmsDatabase;
     this.dbmsRealm = dbmsRealm;
     switch (dbmsRealm) {
       case "mysql":
@@ -74,13 +74,13 @@ class Environment {
    * 
    * @returns {String?} Database connection URI.
    */
-  getDatabaseURI() {
-    const { dbmsRealm: realm, dbmsUser: user, dbmsPassword: password, dbmsHost: host, dbmsPort: port, dbmsDatabase: database } = this;
+  getDatabaseURI({ includeDbName = false } = {}) {
+    const { dbmsRealm: realm, dbmsUser: user, dbmsPassword: password, dbmsHost: host, dbmsPort: port, dbmsName: database } = this;
     switch (realm) {
       case "mysql":
         return `mysql://${user}${password ? `:${password}` : ""}@${host}:${port}/${database}`;
       case "mongodb":
-        return `mongodb://${user ? `${password ? `${user}:${password}@` : `${user}@` }` : ""}${host}:${port}${database ? `/${database}` : ""}`;
+        return `mongodb://${user ? `${password ? `${user}:${password}@` : `${user}@`}` : ""}${host}:${port}${includeDbName && database ? `/${database}` : ""}`;
       default:
         return null;
     }
@@ -99,7 +99,7 @@ class Environment {
    * @param {String} environmentName 
    */
   getSibling(environmentName) {
-    for(const environment of this.siblings) {
+    for (const environment of this.siblings) {
       if (environment.name === environmentName) {
         return environment;
       }

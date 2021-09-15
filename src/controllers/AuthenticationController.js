@@ -145,7 +145,7 @@ class AuthenticationController {
     try {
       const { username } = session;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       const logins = await dbo.collection("logins").find({ user_code: username, deleted_at: null}).toArray();
       db.close();
 
@@ -186,7 +186,7 @@ class AuthenticationController {
       const { username } = session;
       const { id } = params;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       await dbo.collection("logins").updateOne({ _id: new ObjectId(id), user_code: username }, { 
         $set: { deleted_at: (new Date().valueOf() / 1000).toFixed() }
       });
@@ -208,7 +208,7 @@ class AuthenticationController {
 
     // Mongo
     const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-    const dbo = db.db("windesheim-api");
+    const dbo = db.db(environment.dbmsName);
     const file = await dbo.collection("files").findOne({ _id: new ObjectId(id) });
     db.close();
 
@@ -271,7 +271,7 @@ class AuthenticationController {
 
       // Mongo
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       if (!await dbo.collection("users").findOne({ user_code: code })) {
         await dbo.collection("users").insertOne({
           user_code: code,

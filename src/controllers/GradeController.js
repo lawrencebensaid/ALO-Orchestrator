@@ -16,7 +16,7 @@ class GradeController {
     try {
       const { username, password } = session;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       const cookie = await fetchPersonalCookie(username, password);
       const grades = await new WindesheimAzure(cookie).fetchPersonsStudyCourseTestResults(username);
       const courseIDs = [];

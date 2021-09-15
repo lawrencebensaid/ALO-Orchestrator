@@ -11,12 +11,11 @@ global.environment = new Environment({
   webPort: env.WEB_PORT,
   prodWebDomain: env.PROD_WEB_DOMAIN,
   devWebDomain: env.DEV_WEB_DOMAIN,
-  dbmsHost: env.DBMS_HOST,
-  dbmsPort: env.DBMS_PORT,
-  dbmsUser: env.DBMS_USER,
-  dbmsPassword: env.DBMS_PASSWORD,
-  dbmsDatabase: env.DBMS_DATABASE,
-  dbmsRealm: env.DBMS_REALM || "mongodb",
+  dbmsHost: env.DB_HOST,
+  dbmsPort: env.DB_PORT,
+  dbmsUser: env.DB_USER,
+  dbmsPassword: env.DB_PASSWORD,
+  dbmsRealm: env.DB_REALM || "mongodb",
 });
 
 describe("DB", () => {

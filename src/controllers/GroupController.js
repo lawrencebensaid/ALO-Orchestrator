@@ -24,7 +24,7 @@ class GroupController {
 
         try {
           const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-          const dbo = db.db("windesheim-api");
+          const dbo = db.db(environment.dbmsName);
           const cookie = await getCookie();
 
           if (!cookie) {
@@ -118,7 +118,7 @@ class GroupController {
     try {
       const { username, password } = session;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       if (username && password) {
         try {
           const cookie = await fetchCookie(username, password);
@@ -165,7 +165,7 @@ class GroupController {
       const { username, password } = session;
       const { id } = params;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       if (username && password) {
         try {
           const cookie = await fetchCookie(username, password);
@@ -205,7 +205,7 @@ class GroupController {
       const { query } = params;
       const search = new RegExp(query, "i");
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       const groups = await dbo.collection("groups").find({ $or: [{ group_name: { $regex: search } }, { group_code: { $regex: search } }] }).toArray();
       db.close();
 

@@ -24,7 +24,7 @@ class EventController {
 
       try {
         const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-        const dbo = db.db("windesheim-api");
+        const dbo = db.db(environment.dbmsName);
         const cookie = await getCookie();
 
         if (!cookie) {
@@ -96,7 +96,7 @@ class EventController {
   async index({ }, resolve, reject) {
     try {
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
 
       const events = await dbo.collection("events").find().toArray();
       db.close();
@@ -136,7 +136,7 @@ class EventController {
       const { query } = params;
       const search = new RegExp(query, "i");
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
 
       const events = await dbo.collection("events").find({ $or: [{ event_name: { $regex: search } }, { event_comments: { $regex: search } }] }).toArray();
       db.close();
@@ -176,7 +176,7 @@ class EventController {
       const { username, password } = session;
       const { id } = params;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       if (username && password) {
 
         // Fetch
@@ -237,7 +237,7 @@ class EventController {
     try {
       const { id } = params;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
 
       // Mongo
       const events = await dbo.collection("events").find({ event_groups: id }).toArray();

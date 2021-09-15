@@ -196,7 +196,7 @@ export async function getCookie(username) {
   const code = typeof username === "string" ? username.split("@")[0] : null;
   const now = Math.round(new Date().valueOf() / 1000);
   const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-  const dboc = db.db("windesheim-api").collection("users");
+  const dboc = db.db(environment.dbmsName).collection("users");
   const expired = await dboc.find({ "user_cookies.expiration": { $lt: now } }).toArray();
   for (const user of expired) {
     const validCookies = [];
@@ -310,7 +310,7 @@ export async function fetchPersonalCookie(username, password) {
       }
 
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       await dbo.collection("users").updateOne({ user_code: username }, { $push: { user_cookies: { token, expiration } } });
       db.close();
 

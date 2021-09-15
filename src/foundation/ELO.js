@@ -248,7 +248,7 @@ ELO.scanFileStructure = function (context, cookie, pwd) {
 
       // Mongo
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       const file = { file_name: name, file_directory: pwd, file_extension: type.subtype };
       const existingFile = await dbo.collection("files").findOne({ file_name: name, file_directory: pwd, file_extension: type.subtype });
       if (existingFile) {
@@ -274,7 +274,7 @@ ELO.scanFileStructure = function (context, cookie, pwd) {
 
               // Mongo 2
               const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-              const dbo = db.db("windesheim-api");
+              const dbo = db.db(environment.dbmsName);
               await dbo.collection("files").updateOne({ _id: file._id }, { $set: { file_extension: type.subtype, file_size: bytes, file_data: data } });
               db.close();
 
@@ -338,7 +338,7 @@ const TYPES = {
   },
   "142": {
     id: 142,
-    name: "video"
+    name: "webpage"
   },
   "146": {
     id: 146,

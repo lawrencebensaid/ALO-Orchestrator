@@ -10,6 +10,7 @@ import { config } from "dotenv";
 config();
 
 const { env } = process;
+const DB_NAME = env.DB_NAME;
 global.environment = new Environment({
   secret: env.SECRET,
   debug: (env.DEBUG || "").toLowerCase() === "true",
@@ -18,12 +19,12 @@ global.environment = new Environment({
   webPort: env.WEB_PORT,
   prodWebDomain: env.PROD_WEB_DOMAIN,
   devWebDomain: env.DEV_WEB_DOMAIN,
-  dbmsHost: env.DBMS_HOST,
-  dbmsPort: env.DBMS_PORT,
-  dbmsUser: env.DBMS_USER,
-  dbmsPassword: env.DBMS_PASSWORD,
-  dbmsDatabase: env.DBMS_DATABASE,
-  dbmsRealm: env.DBMS_REALM || "mongodb"
+  dbmsName: env.DB_NAME,
+  dbmsHost: env.DB_HOST,
+  dbmsPort: env.DB_PORT,
+  dbmsUser: env.DB_USER,
+  dbmsPassword: env.DB_PASSWORD,
+  dbmsRealm: env.DB_REALM || "mongodb"
 });
 global.orchestrator = new Orchestrator();
 
@@ -34,7 +35,7 @@ global.orchestrator = new Orchestrator();
     console.log(`MongoDB connection successful`);
 
     // Initialize database
-    const dbo = db.db("windesheim-api");
+    const dbo = db.db(DB_NAME);
     const collections = [];
     for (const collection of await dbo.listCollections().toArray()) {
       collections.push(collection.name);

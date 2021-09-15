@@ -27,7 +27,7 @@ class CourseController {
 
       try {
         const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-        const dbo = db.db("windesheim-api");
+        const dbo = db.db(environment.dbmsName);
         const cookie = await getCookie();
 
         if (!cookie) {
@@ -104,7 +104,7 @@ class CourseController {
     try {
       const { username, password } = session;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
 
       const user = await dbo.collection("users").findOne({ user_code: username.split("@")[0] });
       const courses = [];
@@ -154,7 +154,7 @@ class CourseController {
         return;
       }
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       const user = await dbo.collection("users").findOne({ user_code: username.split("@")[0] });
       if (!user.courses) {
         reject({ message: `Course '${id}' has not been cached yet.` });
@@ -204,7 +204,7 @@ class CourseController {
   async index({ }, resolve, reject) {
     try {
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       const courses = await dbo.collection("courses").find().toArray();
       db.close();
 
@@ -235,7 +235,7 @@ class CourseController {
       const { username, password } = session;
       const { id } = params;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-      const dbo = db.db("windesheim-api");
+      const dbo = db.db(environment.dbmsName);
       if (username && password) {
         try {
           const cookie = await fetchCookie(username, password);
@@ -282,7 +282,7 @@ class CourseController {
 
     // Mongo
     const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-    const dbo = db.db("windesheim-api");
+    const dbo = db.db(environment.dbmsName);
     const course = await dbo.collection("courses").findOne({ course_code: id });
     
     db.close();

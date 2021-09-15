@@ -25,7 +25,7 @@ class OptionalAuth {
   
         // Mongo
         const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
-        const dbo = db.db("windesheim-api");
+        const dbo = db.db(environment.dbmsName);
         const login = await dbo.collection("logins").findOne({ login_token: token, deleted_at: null });
         const user = await dbo.collection("users").findOne({ user_code: code })
         if (user && login) {
