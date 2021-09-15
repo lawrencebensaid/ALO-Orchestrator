@@ -16,8 +16,7 @@ class Auth {
     const token = authHeader.split(" ")[1];
 
     if (!isBearer || !token) {
-      response.status(401);
-      response.json({ message: "Bearer token missing" });
+      response.json({ message: "Bearer token missing", status: 401 });
       return;
     }
 
@@ -56,7 +55,7 @@ class Auth {
       }
     } catch (error) {
       console.log(error);
-      response.json({ message: "Token invalid" });
+      response.json({ message: "Token invalid", status: 401 });
     }
   }
 
