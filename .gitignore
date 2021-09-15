@@ -1,10 +1,27 @@
-node_modules/
+# VS Code
 .vscode/*
 !.vscode/launch.json
+
+# NodeJS
+node_modules/
+
+# macOS
+.DS_Store
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Other
 yarn-error.log
 .cache
-.DS_Store
-mongo-volume
-init-mongo.js
 .env
-.terraform/
