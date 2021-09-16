@@ -12,6 +12,17 @@ provider "docker" {
         username = var.docker_registry_username
         password = var.docker_registry_password
     }
+    host = "ssh://${var.remote_user}@${var.remote_host}"
+}
+
+variable "remote_user" {
+    description = "Username of the remote"
+    type        = string
+}
+
+variable "remote_host" {
+    description = "Hostname of the remote"
+    type        = string
 }
 
 variable "docker_registry" {
