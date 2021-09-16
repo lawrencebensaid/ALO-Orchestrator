@@ -277,7 +277,7 @@ class CourseController {
   /**
    * @description Responds with a image file.
    */
-  async thumbnail({ params }, resolve, reject) {
+  async thumbnail({ response, params }, resolve, reject) {
     const { id } = params;
 
     // Mongo
@@ -294,7 +294,8 @@ class CourseController {
       fs.writeFileSync(download, course.course_thumbnail, "base64");
       resolve({ filename, download });
     } else {
-      reject({ message: "Course has no thumbnail", status: 404 });
+      response.status(404);
+      reject({ message: "Course has no thumbnail" });
     }
   }
 

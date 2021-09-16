@@ -230,6 +230,7 @@ class AuthenticationController {
    * @description Authenticates with ELO.
    */
   async authenticate({
+    response,
     request,
     body: {
       username,
@@ -311,7 +312,8 @@ class AuthenticationController {
       resolve({ token });
     } catch (error) {
       if (typeof error === "string") {
-        reject({ status: 403, message: error });
+        response.status(403);
+        reject({ message: error });
       } else {
         console.log(error);
         reject({ message: "Unable to authenticate at this time." });
