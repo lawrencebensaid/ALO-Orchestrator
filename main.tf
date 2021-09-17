@@ -106,6 +106,10 @@ resource "docker_container" "mongo_container" {
     ]
     network_mode = "bridge"
     networks = [ "aloapi_network" ]
+    volumes {
+        container_path = "/data/db"
+        volume_name = "data"
+    }
 }
 
 resource "docker_container" "aloapi_container" {
@@ -128,6 +132,10 @@ resource "docker_container" "aloapi_container" {
     ]
     network_mode = "bridge"
     networks = [ "aloapi_network" ]
+    volumes {
+        container_path = "/app_container/.cache"
+        volume_name = "cache"
+    }
 }
 
 resource "docker_image" "mongo_image" {
