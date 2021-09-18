@@ -362,9 +362,19 @@ const TYPES = {
     name: "file",
     subtype: "docx"
   },
+  "667": {
+    id: 667,
+    name: "file",
+    subtype: "xlsx"
+  },
   "668": {
     id: 668,
     name: "file",
     subtype: "pptx"
+  },
+  "670": {
+    id: 670,
+    name: "file",
+    subtype: "mp4"
   }
 };

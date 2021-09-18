@@ -116,6 +116,7 @@ class CourseController {
             name: course.course_name,
             points: course.course_points,
             description: course.course_description,
+            canUpdate: !!course.course_eloid,
             thumbnail: `/course/${course.course_code}/thumbnail`,
             filemap: course.course_filemap
           });
