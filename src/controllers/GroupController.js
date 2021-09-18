@@ -28,7 +28,7 @@ class GroupController {
           const cookie = await getCookie();
 
           if (!cookie) {
-            throw new Error("No cookie available at this time")
+            throw new Error("No token available at this time")
           }
           const groups = await new WindesheimAzure(cookie).fetchKlas();
 

@@ -1,5 +1,6 @@
-import Task from "./Task";
-import Orchestrator from "./Orchestrator";
+import Orchestrator from "./Orchestrator"
+import Task from "./Task"
+import moment from "moment"
 
 
 /**
@@ -71,6 +72,20 @@ class Job {
         date: job.ranAt
       });
     }
+  }
+
+
+  /**
+   * @returns {object}
+   */
+  description({ humanReadable } = { humanReadable: false }) {
+    const jobInfo = { id: this.key };
+    const ranAt = moment(this.ranAt);
+    if (ranAt.isValid()) {
+      jobInfo.ranAt = humanReadable ? ranAt.fromNow() : this.ranAt.valueOf();
+    }
+    jobInfo.message = this.isRunning() ? "Updating now" : `Updated ${ranAt.isValid() ? ranAt.fromNow() : "never"}`;
+    return jobInfo;
   }
 
 }

@@ -1,4 +1,5 @@
-import Orchestrator from "./Orchestrator";
+import Orchestrator from "./Orchestrator"
+import moment from "moment"
 
 
 /**
@@ -115,6 +116,24 @@ class Task {
    */
   isRunning() {
     return this.status === "running";
+  }
+
+
+  /**
+   * @returns {object}
+   */
+  description({ humanReadable } = { humanReadable: false }) {
+    const taskInfo = { id: this.key, status: this.status };
+    const startedAt = moment(this.startedAt);
+    const startAt = moment(this.startAt);
+    if (startedAt.isValid()) {
+      taskInfo.startedAt = humanReadable ? startedAt.fromNow() : this.startedAt.valueOf();
+    } else {
+      taskInfo.startAt = humanReadable ? startAt.fromNow() : this.startAt.valueOf();
+    }
+    taskInfo.progress = humanReadable ? `${(this.progress * 100).toFixed(2)}%` : this.progress;
+    taskInfo.message = this.message;
+    return taskInfo;
   }
 
 }

@@ -31,7 +31,7 @@ class CourseController {
         const cookie = await getCookie();
 
         if (!cookie) {
-          throw new Error("No cookie available at this time")
+          throw new Error("No token available at this time")
         }
         const courses = await dbo.collection("courses").find().toArray();
         const courseIDs = [];
@@ -74,7 +74,7 @@ class CourseController {
         db.close();
         succeed();
       } catch (error) {
-        fail(error);
+        fail(error.message || null);
       }
 
     });
@@ -181,8 +181,8 @@ class CourseController {
 
       try {
         if (course.course_eloid) {
-          console.log("Fetching for:", course.course_eloid);
-          const filemap = (await fetchCourseFiles(username, password, course.course_eloid)).filemap;
+          console.log("Fetching for:", course.course_code);
+          const filemap = (await fetchCourseFiles(username, password, course.course_eloid, course.course_code)).filemap;
           if (Array.isArray(filemap)) {
             await dbo.collection("courses").updateOne({ course_code: id }, { $set: { course_filemap: filemap } }, { upsert: true });
           }

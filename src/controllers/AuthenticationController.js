@@ -45,10 +45,11 @@ class AuthenticationController {
   /**
    * @description Responds with API infromation & status.
    */
-  async status({ request }, resolve) {
+  async status({ request, query }, resolve) {
     const info = JSON.parse(fs.readFileSync("package.json"));
     const routes = JSON.parse(fs.readFileSync("src/routing.json"));
     const paths = Object.keys(routes["endpoints"]);
+    const humanReadable = !parseInt(query["dataOnly"]);
     const service = {};
     for (const sibling of environment.getSiblings()) {
       service[sibling.name] = `${request.protocol}://` + environment.getSibling(sibling.name).webDomain;
@@ -62,7 +63,7 @@ class AuthenticationController {
       },
       service,
       endpoints: paths,
-      orchestrator: orchestrator.statusDescription()
+      orchestrator: orchestrator.description({ humanReadable })
     };
     resolve(response);
   }

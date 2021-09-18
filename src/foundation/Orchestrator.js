@@ -1,7 +1,7 @@
-import { v4 as UUID } from "uuid";
-import moment from "moment";
-import Task from "./Task";
-import Job from "./Job";
+import { v4 as UUID } from "uuid"
+import moment from "moment"
+import Task from "./Task"
+import Job from "./Job"
 
 
 /**
@@ -14,10 +14,11 @@ class Orchestrator {
    */
   constructor() {
     this.operationInterval = 1000;
-    this.status = "idle";
+    this.setStatus("idle");
     this.message = "Standing by";
     this.tasks = {};
     this.jobs = {};
+    this.listeners = {};
     setInterval(() => {
       this.healthCheck();
       const tasks = this.getTasks("pending");
@@ -37,28 +38,59 @@ class Orchestrator {
 
 
   /**
+   * @description Registers a new listener.
+   * @param {string} type 
+   * @param {Function} callback 
+   */
+  on(type, callback) {
+    if (typeof type !== "string") return;
+    if (!Array.isArray(this.listeners[type])) this.listeners[type] = [];
+    this.listeners[type].push(callback);
+  }
+
+
+  /**
+   * @description Calls all listeners of given type.
+   * @param {string} type 
+   * @param {*} callback 
+   */
+  send(type, data) {
+    if (typeof type !== "string") return;
+    if (!this.listeners) return;
+    for (const listener of this.listeners[type]) {
+      if (typeof listener === "function") listener(data);
+    }
+  }
+
+
+  /**
+   * @description Sets the status to the new status.
+   * 
+   * @param {string} status 
+   */
+  setStatus(status) {
+    if (this.status == status) return;
+    this.status = status;
+    this.send("update", this.description());
+  }
+
+
+  /**
    * @description Starts attemt to cleaning up
    */
   cleanup() {
-    this.status = "cleaning up";
+    this.setStatus("cleaning up")
 
-    // Cleanup finished Tasks
-    setTimeout(() => {
-      const tasks = this.getTasks("finished");
-      if (tasks.length > 0 && this.isPruning()) {
-        delete this.tasks[tasks[0].id];
+    // Cleanup finished and failed Tasks
+    const tasks = this.getTasks("finished").concat(this.getTasks("error"));
+    if (tasks.length > 0 && this.isPruning()) {
+      var increase = 1;
+      for (let i = 0; i < tasks.length; i++) {
+        increase++;
+        const task = tasks[i];
+        setTimeout(() => delete this.tasks[task.id], this.operationInterval * increase);
       }
-      this.healthCheck();
-    }, this.operationInterval);
-    
-    // Cleanup failed Tasks
-    setTimeout(() => {
-      const tasks = this.getTasks("error");
-      if (tasks.length > 0 && this.isPruning()) {
-        delete this.tasks[tasks[0].id];
-      }
-      this.healthCheck();
-    }, this.operationInterval * 4);
+    }
   }
 
 
@@ -70,14 +102,14 @@ class Orchestrator {
     const tasksFinished = this.getTasks("finished");
     const tasksErrored = this.getTasks("error");
     if (tasksRunning.length > 0) {
-      this.status = "busy";
+      this.setStatus("busy");
       return;
     }
     if (tasksFinished.length > 0 || tasksErrored.length > 0) {
       this.cleanup();
       return;
     }
-    this.status = "idle";
+    this.setStatus("idle");
     this.message = "Standing by";
   }
 
@@ -164,13 +196,14 @@ class Orchestrator {
         return; // Disgard task
       }
     }
-    
+
     // Create task
     const id = UUID();
     task.id = id;
     task.status = "created";
     task.register(this);
     this.tasks[id] = task;
+    this.send("update", task.description());
   }
 
 
@@ -198,38 +231,27 @@ class Orchestrator {
     job.mayExecute = mayExecute;
     job.register(this);
     this.jobs[id] = job;
+    this.send("update", job.description());
   }
 
 
   /**
    * @description Returns a JSON description of the orchestrator's operations.
    */
-  statusDescription() {
+  description({ humanReadable } = { humanReadable: false }) {
     const description = {
       status: this.status,
       message: this.message,
-      jobs: {},
+      jobs: [],
       tasks: []
     };
     for (const jobId in this.jobs) {
       const job = this.jobs[jobId];
-      const ranAt = moment(job.ranAt);
-      const message = job.isRunning() ? "Updating NOW" : `Updated ${ranAt.isValid() ? ranAt.fromNow() : "never"}`;
-      description.jobs[job.key] = message;
+      description.jobs.push(job.description({ humanReadable }));
     }
     for (const taskId in this.tasks) {
       const task = this.tasks[taskId];
-      const taskInfo = { task: task.key, status: task.status };
-      const startedAt = moment(task.startedAt);
-      const startAt = moment(task.startAt);
-      if (startedAt.isValid()) {
-        taskInfo.startedAt = startedAt.fromNow();
-      } else {
-        taskInfo.startAt = startAt.fromNow();
-      }
-      taskInfo.progress = `${(task.progress * 100).toFixed(2)}%`;
-      taskInfo.message = task.message;
-      description.tasks.push(taskInfo);
+      description.tasks.push(task.description({ humanReadable }));
     }
     return description;
   }

@@ -1,12 +1,13 @@
-import fs from "fs";
-import express from "express";
-import session from "express-session";
-import bodyParser from "body-parser";
-import Cache from "./foundation/Cache";
-import Environment from "./foundation/Environment";
-import Orchestrator from "./foundation/Orchestrator";
-import { MongoClient } from "mongodb";
-import { config } from "dotenv";
+import fs from "fs"
+import express from "express"
+import session from "express-session"
+import bodyParser from "body-parser"
+import Cache from "./foundation/Cache"
+import Environment from "./foundation/Environment"
+import Orchestrator from "./foundation/Orchestrator"
+import WebSocket from "ws"
+import { MongoClient } from "mongodb"
+import { config } from "dotenv"
 config();
 
 const { env } = process;
@@ -71,14 +72,14 @@ global.orchestrator = new Orchestrator();
     await dbo.collection("logins").createIndex({ login_rsa_key: 1 }, { unique: true });
     await dbo.collection("logins").createIndex({ login_token: 1 }, { unique: true });
 
-    
+
     if (!collections.includes("courses")) {
       await dbo.createCollection("courses");
     }
     await dbo.collection("courses").dropIndexes();
     await dbo.collection("courses").createIndex({ course_code: 1 }, { unique: true });
 
-    
+
     if (!collections.includes("grades")) {
       await dbo.createCollection("grades");
     }
@@ -202,6 +203,30 @@ for (const endpoint of endpoints) {
 }
 
 const { webHost: host, webPort: port } = environment;
-app.listen(port, host, () => {
+const server = app.listen(port, host, () => {
   console.log(`Webserver running on ${host}:${port}`);
+});
+
+
+const wsServer = new WebSocket.Server({ noServer: true });
+
+let sockets = [];
+wsServer.on("connection", (socket) => {
+  sockets.push(socket);
+  console.log("connection");
+
+  socket.on("close", () => {
+    console.log("close");
+    sockets = sockets.filter(s => s !== socket);
+  });
+});
+
+orchestrator.on("update", (data) => {
+  sockets.forEach(s => s.send(JSON.stringify(data)));
+});
+
+server.on("upgrade", (request, socket, head) => {
+  wsServer.handleUpgrade(request, socket, head, socket => {
+    wsServer.emit("connection", socket, request);
+  });
 });

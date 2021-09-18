@@ -47,6 +47,7 @@ class ELO {
           }
           await interceptedRequest.continue();
         });
+        update(.05);
 
         await page.goto("https://elo.windesheim.nl");
         await page.waitForSelector("#userNameInput");
@@ -54,6 +55,7 @@ class ELO {
         await page.type("#passwordInput", this.password);
         await page.click("#submitButton");
         console.log("[ELO] Auth complete");
+        update(.1);
 
         // #tns
         var tns = await page.waitForSelector("#tns", { visible: true, timeout: 0 });
@@ -75,6 +77,7 @@ class ELO {
         await _204.waitForSelector(`li[data-srid="${id}"]`);
         // await _204.click(`ul.all-studyroutes > li[data-srid="${id}"]`);
         await _204.click(`li[data-srid="${id}"]`);
+        update(.15);
 
         // #tns
         var tns2 = await page.waitForSelector("#tns", { visible: true, timeout: 0 });
@@ -102,6 +105,7 @@ class ELO {
         var wif = await _206.waitForSelector("#widgetsiframe", { visible: true, timeout: 0 });
         wif = await wif.contentFrame();
         console.log("[ELO] Course loaded");
+        update(.2);
 
         // .widgetiframe News
         try {
@@ -131,11 +135,18 @@ class ELO {
         await tns2.waitForSelector(`div.ExplorerTree > #uls > *`);
         console.log("[ELO] Files loaded");
         update(.25);
+        var percentage = .25;
+        const interval = setInterval(() => {
+          percentage += Math.random() / 100;
+          if (percentage >= 1) percentage = .99;
+          update(percentage);
+        }, 1000);
         // Map file structure
         const filemap = await ELO.scanFileStructure(tns2, cookie, `${courseName}`);
         // console.log(util.inspect(filemap, false, null, true));
         const course = new Course(id, courseCode, courseName, thumbnail, filemap);
         course.save();
+        clearInterval(interval);
         resolve(course);
 
         if (!environment.debug) {
@@ -308,8 +319,10 @@ ELO.scanFileStructure = function (context, cookie, pwd) {
           const html = await detailFrame.$eval("html", (element) => { return element.outerHTML; });
           const $context = cheerio.load(html);
           const href = $context(".studyrouteitemDescription a").attr("href");
-          const { request } = await httpRequest(href, { headers: { "Cookie": cookie }, resolveWithFullResponse: true });
-          if (href) item.href = request.uri.href;
+          if (href) {
+            const { request } = await httpRequest(href, { headers: { "Cookie": cookie }, resolveWithFullResponse: true });
+            if (href) item.href = request.uri.href;
+          }
         }
         structure.push(item);
       }
