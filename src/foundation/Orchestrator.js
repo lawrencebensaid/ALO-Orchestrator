@@ -54,11 +54,11 @@ class Orchestrator {
    * @param {string} type 
    * @param {*} callback 
    */
-  send(type, data) {
+  send(type, data = null) {
     if (typeof type !== "string") return;
     if (!this.listeners) return;
     for (const listener of this.listeners[type]) {
-      if (typeof listener === "function") listener(data);
+      if (typeof listener === "function") listener(data || this.description());
     }
   }
 
@@ -71,7 +71,7 @@ class Orchestrator {
   setStatus(status) {
     if (this.status == status) return;
     this.status = status;
-    this.send("update", this.description());
+    this.send("update");
   }
 
 
@@ -88,7 +88,10 @@ class Orchestrator {
       for (let i = 0; i < tasks.length; i++) {
         increase++;
         const task = tasks[i];
-        setTimeout(() => delete this.tasks[task.id], this.operationInterval * increase);
+        setTimeout(() => {
+          delete this.tasks[task.id];
+          this.send("update");
+        }, this.operationInterval * increase);
       }
     }
   }
@@ -203,7 +206,7 @@ class Orchestrator {
     task.status = "created";
     task.register(this);
     this.tasks[id] = task;
-    this.send("update", task.description());
+    this.send("update");
   }
 
 
@@ -231,7 +234,7 @@ class Orchestrator {
     job.mayExecute = mayExecute;
     job.register(this);
     this.jobs[id] = job;
-    this.send("update", job.description());
+    this.send("update");
   }
 
 

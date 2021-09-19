@@ -37,10 +37,11 @@ class Task {
    * @param {Orchestrator} orchestrator The delegate Orchestrator who manages this Task.
    */
   register(orchestrator) {
-    if (!orchestrator instanceof Orchestrator) {
+    if (!(orchestrator instanceof Orchestrator)) {
       console.log("Task activation failed!");
       return;
     }
+    this.orchestrator = orchestrator;
     this.status = "pending";
   }
 
@@ -74,6 +75,8 @@ class Task {
   update(task, percentage) {
     if (typeof percentage === "number" && percentage >= 0 && percentage <= 1) {
       task.progress = percentage;
+      if (!(this.orchestrator instanceof Orchestrator)) return;
+      this.orchestrator.send("update");
     }
   }
 
@@ -91,6 +94,8 @@ class Task {
     task.progress = 1;
     task.message = message;
     console.log(`Task '${task.key}' succeeded!${message ? ` '${message}'` : ""}`);
+    if (!(this.orchestrator instanceof Orchestrator)) return;
+    this.orchestrator.send("update");
   }
 
 
@@ -106,6 +111,8 @@ class Task {
     }
     task.message = message;
     console.log(`Task '${task.key}' failed!${message ? ` '${message}'` : ""}`);
+    if (!(this.orchestrator instanceof Orchestrator)) return;
+    this.orchestrator.send("update");
   }
 
 

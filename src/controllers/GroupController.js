@@ -17,7 +17,7 @@ class GroupController {
     (() => {
       // Notify Orchestrator.
       const task = new Task({
-        key: `group.all`,
+        key: `group.*`,
         message: `Running group update (all)`,
         timeout: 1000 * 60 * 1 // Terminate Task after 1 minute.
       }, async ({ update, succeed, fail }) => {
@@ -54,10 +54,10 @@ class GroupController {
 
       });
 
-      const job = new Job({ task, key: `group.all`, interval: 1000 * 60 * 24 * 1 }); // Interval of 1 day.
+      const job = new Job({ task, key: `group.*`, interval: 1000 * 60 * 24 * 1 }); // Interval of 1 day.
       orchestrator.setJob(job, () => {
 
-        const existingTask = orchestrator.getTask(`group.all`);
+        const existingTask = orchestrator.getTask(`group.*`);
         const isUpdating = existingTask ? existingTask.isRunning() : false;
 
         if (isUpdating) {
@@ -133,7 +133,7 @@ class GroupController {
             }, { upsert: true });
           }
 
-          orchestrator.getTask("group.all").run(); // DOES NOT WORK YET SOMEHOW...
+          orchestrator.getTask("group.*").run(); // DOES NOT WORK YET SOMEHOW...
 
         } catch (error) { }
       }

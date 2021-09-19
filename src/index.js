@@ -222,7 +222,8 @@ wsServer.on("connection", (socket) => {
 });
 
 orchestrator.on("update", (data) => {
-  sockets.forEach(s => s.send(JSON.stringify(data)));
+  console.log("update", data);
+  sockets.forEach(s => s.send(Buffer.from(JSON.stringify(data))));
 });
 
 server.on("upgrade", (request, socket, head) => {

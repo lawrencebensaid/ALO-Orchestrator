@@ -36,11 +36,14 @@ class Job {
    * @param {Orchestrator} orchestrator The delegate Orchestrator who manages this Job.
    */
   register(orchestrator) {
-    if (!orchestrator instanceof Orchestrator) {
+    if (!(orchestrator instanceof Orchestrator)) {
       console.log("Job activation failed!");
       return;
     }
     this.orchestrator = orchestrator;
+    if (this.task instanceof Task) {
+      this.task.register(orchestrator);
+    }
     this.timer = setInterval(() => { this.trigger(this) }, this.interval);
   }
 
@@ -51,6 +54,7 @@ class Job {
    * @returns {Bool}
    */
   isRunning() {
+    if (!(this.task instanceof Task)) { return };
     return this.task.isRunning();
   }
 
@@ -71,6 +75,8 @@ class Job {
         message: "Job triggered task",
         date: job.ranAt
       });
+      if (!(this.orchestrator instanceof Orchestrator)) return;
+      this.orchestrator.send("update");
     }
   }
 

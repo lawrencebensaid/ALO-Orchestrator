@@ -17,7 +17,7 @@ class EventController {
   constructor() {
     // Notify Orchestrator.
     const task = new Task({
-      key: `event.all`,
+      key: `event.*`,
       message: `Running event update (all)`,
       timeout: 1000 * 60 * 60 // Terminate Task after 60 minutes.
     }, async ({ update, succeed, fail }) => {
@@ -72,10 +72,10 @@ class EventController {
 
     });
 
-    const job = new Job({ task, key: `event.all`, interval: 1000 * 60 * 24 * 7 }); // Interval of 1 week.
+    const job = new Job({ task, key: `event.*`, interval: 1000 * 60 * 24 * 7 }); // Interval of 1 week.
     orchestrator.setJob(job, () => {
 
-      const existingTask = orchestrator.getTask(`event.all`);
+      const existingTask = orchestrator.getTask(`event.*`);
       const isUpdating = existingTask ? existingTask.isRunning() : false;
 
       if (isUpdating) {
