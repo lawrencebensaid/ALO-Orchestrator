@@ -1,6 +1,7 @@
 {
   "endpoints": {
     "GET /": "AuthenticationController.status",
+    "GET /resource": { "AuthenticationController.resourceIndex": ["Auth"] },
     "GET /file/:id": { "AuthenticationController.file": ["Auth"] },
     "POST /auth": "AuthenticationController.authenticate",
     "GET /my/profile": { "AuthenticationController.myProfile": ["Auth"] },

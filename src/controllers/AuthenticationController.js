@@ -147,7 +147,7 @@ class AuthenticationController {
       const { username } = session;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
       const dbo = db.db(environment.dbmsName);
-      const logins = await dbo.collection("logins").find({ user_code: username, deleted_at: null}).toArray();
+      const logins = await dbo.collection("logins").find({ user_code: username, deleted_at: null }).toArray();
       db.close();
 
       // Format
@@ -188,7 +188,7 @@ class AuthenticationController {
       const { id } = params;
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
       const dbo = db.db(environment.dbmsName);
-      await dbo.collection("logins").updateOne({ _id: new ObjectId(id), user_code: username }, { 
+      await dbo.collection("logins").updateOne({ _id: new ObjectId(id), user_code: username }, {
         $set: { deleted_at: (new Date().valueOf() / 1000).toFixed() }
       });
       db.close();
@@ -198,6 +198,34 @@ class AuthenticationController {
       console.log(error);
       reject({ message: "Failed to invalidate Login" });
     }
+  }
+
+
+  /**
+   * @description Responds with a file.
+   */
+  async resourceIndex({ response }, resolve, reject) {
+
+    // Mongo
+    const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
+    const dbo = db.db(environment.dbmsName);
+    const files = await dbo.collection("files").find().toArray();
+    db.close();
+
+    const resources = [];
+    for (const file of files) {
+      resources.push({
+        id: file._id,
+        name: file.file_name,
+        directory: file.file_directory,
+        extension: file.file_extension,
+        size: file.file_size,
+        course: {
+          code: file.course_code
+        }
+      });
+    }
+    resolve(resources);
   }
 
 
