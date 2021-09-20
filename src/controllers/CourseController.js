@@ -20,8 +20,8 @@ class CourseController {
   constructor() {
     // Notify Orchestrator.
     const task = new Task({
-      key: `course.*`,
-      message: `Running course update (all)`,
+      key: "course/*",
+      message: "Running course update (all)",
       timeout: 1000 * 60 * 60 // Terminate Task after 60 minutes.
     }, async ({ update, succeed, fail }) => {
 
@@ -79,14 +79,14 @@ class CourseController {
 
     });
 
-    const job = new Job({ task, key: `course.*`, interval: 1000 * 60 * 24 * 7 }); // Interval of 1 week.
+    const job = new Job({ task, key: "course/*", interval: 1000 * 60 * 24 * 7 }); // Interval of 1 week.
     orchestrator.setJob(job, () => {
 
-      const existingTask = orchestrator.getTask(`course.*`);
+      const existingTask = orchestrator.getTask("course/*");
       const isUpdating = existingTask ? existingTask.isRunning() : false;
 
       if (isUpdating) {
-        console.log(`An update is already in progress.`);
+        console.log("An update is already in progress.");
         return false;
       }
 

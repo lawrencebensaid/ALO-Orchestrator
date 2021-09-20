@@ -13,7 +13,7 @@ export default async function (username, password, id, code = null) {
   return new Promise(async (resolve, reject) => {
 
     // Notify Orchestrator.
-    const task = new Task({ key: `course.${code}`, message: `Running course ${code} update`, timeout: 1000 * 60 * 5 }, async ({ update, succeed, fail }) => {
+    const task = new Task({ key: `course/${code}`, message: `Running course ${code} update`, timeout: 1000 * 60 * 5 }, async ({ update, succeed, fail }) => {
       try {
         const course = await new ELO(username, password).fetchCourseFiles(id, { onUpdate: update } );
         succeed();
@@ -24,12 +24,12 @@ export default async function (username, password, id, code = null) {
       }
     });
 
-    const job = new Job({ task, key: `course.${code}`, interval: 1000 * TTL_MAX });
+    const job = new Job({ task, key: `course/${code}`, interval: 1000 * TTL_MAX });
     orchestrator.setJob(job, () => {
 
       const modified = Cache.modifiedAt("courses", code);
       const expiration = moment(modified).add(TTL_MIN, "seconds");
-      const existingTask = orchestrator.getTask(`course.${code}`);
+      const existingTask = orchestrator.getTask(`course/${code}`);
       const isUpdating = existingTask ? existingTask.isRunning() : false;
 
       if (isUpdating) {

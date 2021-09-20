@@ -213,16 +213,13 @@ const wsServer = new WebSocket.Server({ noServer: true });
 let sockets = [];
 wsServer.on("connection", (socket) => {
   sockets.push(socket);
-  console.log("connection");
 
   socket.on("close", () => {
-    console.log("close");
     sockets = sockets.filter(s => s !== socket);
   });
 });
 
 orchestrator.on("update", (data) => {
-  console.log("update", data);
   sockets.forEach(s => s.send(Buffer.from(JSON.stringify(data))));
 });
 

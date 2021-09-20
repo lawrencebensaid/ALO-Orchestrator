@@ -142,7 +142,7 @@ class ELO {
           update(percentage);
         }, 1000);
         // Map file structure
-        const filemap = await ELO.scanFileStructure(tns2, cookie, `${courseName}`);
+        const filemap = await ELO.scanFileStructure(tns2, cookie, courseCode, `${courseName}`);
         // console.log(util.inspect(filemap, false, null, true));
         const course = new Course(id, courseCode, courseName, thumbnail, filemap);
         course.save();
@@ -233,8 +233,8 @@ class ELO {
 }
 
 
-ELO.scanFileStructure = function (context, cookie, pwd) {
-  const ulid = arguments[3] ? arguments[3].replace("LI", "UL") : null;
+ELO.scanFileStructure = function (context, cookie, courseCode, pwd) {
+  const ulid = arguments[4] ? arguments[4].replace("LI", "UL") : null;
   return new Promise(async (resolve, reject) => {
     const structure = [];
     const selector = `div.ExplorerTree > #uls ${ulid ? `ul#${ulid} > li` : "li"}`;
@@ -260,7 +260,7 @@ ELO.scanFileStructure = function (context, cookie, pwd) {
       // Mongo
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
       const dbo = db.db(environment.dbmsName);
-      const file = { file_name: name, file_directory: pwd, file_extension: type.subtype };
+      const file = { file_name: name, file_directory: pwd, file_extension: type.subtype, course_code: courseCode };
       const existingFile = await dbo.collection("files").findOne({ file_name: name, file_directory: pwd, file_extension: type.subtype });
       if (existingFile) {
         file._id = existingFile._id;
@@ -307,7 +307,7 @@ ELO.scanFileStructure = function (context, cookie, pwd) {
         // Recurse
         var children = [];
         try {
-          children = await ELO.scanFileStructure(context, cookie, `${pwd}/${name}`, eid);
+          children = await ELO.scanFileStructure(context, cookie, courseCode, `${pwd}/${name}`, eid);
         } catch (error) {
           console.log("[ELO] RECURSE NOTICE", error);
         }
