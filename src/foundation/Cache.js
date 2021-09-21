@@ -32,7 +32,7 @@ Cache.clear = () => {
  * Empties/Clears the persistent cache.
  */
 Cache.shred = (container) => {
-  fs.rmSync(Cache.containerURI(container));
+  fs.unlinkSync(Cache.containerURI(container));
 };
 
 
