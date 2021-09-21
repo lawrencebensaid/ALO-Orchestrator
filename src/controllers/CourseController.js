@@ -84,7 +84,7 @@ class CourseController {
 
     });
 
-    const job = new Job({ task, key: "course/*", interval: 1000 * 60 * 24 * 7 }); // Interval of 1 week.
+    const job = new Job({ task, key: "course/*", interval: 1000 * 60 * 60 * 24 * 7 }); // Interval of 1 week.
     orchestrator.setJob(job, () => {
 
       const existingTask = orchestrator.getTask("course/*");
@@ -129,7 +129,7 @@ class CourseController {
 
     });
 
-    const job2 = new Job({ task: task2, key: "course/*/elo-index", interval: 1000 * 60 * 24 }); // Interval of 1 day.
+    const job2 = new Job({ task: task2, key: "course/*/elo-index", interval: 1000 * 60 * 60 * 24 }); // Interval of 1 day.
     orchestrator.setJob(job2, () => {
 
       const existingTask = orchestrator.getTask("course/*/elo-index");

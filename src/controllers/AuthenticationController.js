@@ -293,7 +293,7 @@ class AuthenticationController {
     try {
       const code = username.split("@")[0].toLowerCase();
       await fetchInfo(code, password); // Authentication
-      const token = jwt.sign({ data: { username, password } }, environment.secret);
+      const token = jwt.sign({ data: { username: code, password } }, environment.secret);
       const now = Math.round(new Date().valueOf() / 1000);
       const agent = request.headers["user-agent"];
       const agentOS = getBrowserFromUserAgent(agent);

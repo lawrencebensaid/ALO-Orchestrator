@@ -54,7 +54,7 @@ class GroupController {
 
       });
 
-      const job = new Job({ task, key: "group/*", interval: 1000 * 60 * 24 * 1 }); // Interval of 1 day.
+      const job = new Job({ task, key: "group/*", interval: 1000 * 60 * 60 * 24 * 1 }); // Interval of 1 day.
       orchestrator.setJob(job, () => {
 
         const existingTask = orchestrator.getTask("group/*");

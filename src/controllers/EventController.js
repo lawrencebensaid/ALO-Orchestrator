@@ -72,7 +72,7 @@ class EventController {
 
     });
 
-    const job = new Job({ task, key: "event/*", interval: 1000 * 60 * 24 * 7 }); // Interval of 1 week.
+    const job = new Job({ task, key: "event/*", interval: 1000 * 60 * 60 * 24 * 7 }); // Interval of 1 week.
     orchestrator.setJob(job, () => {
 
       const existingTask = orchestrator.getTask("event/*");

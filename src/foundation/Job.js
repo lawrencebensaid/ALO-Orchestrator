@@ -24,7 +24,8 @@ class Job {
     this.log = [];
     this.mayExecute = mayExecute;
     this.timer = null;
-    this.ranAt = null;
+    this.lastRun = null;
+    this.nextRun = null;
   }
 
 
@@ -44,7 +45,11 @@ class Job {
     if (this.task instanceof Task) {
       this.task.register(orchestrator);
     }
-    this.timer = setInterval(() => { this.trigger(this) }, this.interval);
+    this.nextRun = moment().add(this.interval, "milliseconds");
+    this.timer = setInterval(() => {
+      this.trigger(this);
+      this.nextRun = moment().add(this.interval, "milliseconds");
+    }, this.interval);
   }
 
 
@@ -70,10 +75,10 @@ class Job {
     if (job.task instanceof Task && allow) {
       job.task.startAt = new Date();
       job.orchestrator.scheduleTask(job.task);
-      job.ranAt = new Date();
+      job.lastRun = new Date();
       job.log.push({
         message: "Job triggered task",
-        date: job.ranAt
+        date: job.lastRun
       });
       if (!(this.orchestrator instanceof Orchestrator)) return;
       this.orchestrator.send("update");
@@ -86,11 +91,11 @@ class Job {
    */
   description({ humanReadable } = { humanReadable: false }) {
     const jobInfo = { id: this.key };
-    const ranAt = moment(this.ranAt);
-    if (ranAt.isValid()) {
-      jobInfo.ranAt = humanReadable ? ranAt.fromNow() : this.ranAt.valueOf();
-    }
-    jobInfo.message = this.isRunning() ? "Updating now" : `Updated ${ranAt.isValid() ? ranAt.fromNow() : "never"}`;
+    const lastRun = moment(this.lastRun);
+    if (lastRun.isValid()) jobInfo.lastRunAt = humanReadable ? lastRun.fromNow() : this.lastRun.valueOf();
+    const nextRun = moment(this.nextRun);
+    if (nextRun.isValid()) jobInfo.nextRunAt = humanReadable ? nextRun.fromNow() : this.nextRun.valueOf();
+    jobInfo.message = this.isRunning() ? "Updating now" : `Updated ${lastRun.isValid() ? lastRun.fromNow() : "never"}`;
     return jobInfo;
   }
 

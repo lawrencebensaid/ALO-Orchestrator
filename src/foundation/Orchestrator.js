@@ -175,7 +175,6 @@ class Orchestrator {
     } else {
       for (const taskId in this.tasks) {
         const task = this.tasks[taskId];
-        console.log(`getTask(${id})`, task.key);
         if (task.key === id) return task;
       }
     }
@@ -196,7 +195,6 @@ class Orchestrator {
     } else {
       for (const jobId in this.jobs) {
         const job = this.jobs[jobId];
-        console.log(`getJob(${id})`, job.key);
         if (job.key === id) return job;
       }
     }
