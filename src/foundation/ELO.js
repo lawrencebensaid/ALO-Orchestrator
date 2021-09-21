@@ -6,7 +6,11 @@ import Cache from "./Cache";
 import fs from "fs";
 import httpRequest from "request-promise-native";
 import { download, getFileExtension } from "./Util";
+import { config } from "dotenv"
 
+
+config();
+const { VERBOSE } = process.env;
 var listeners = [];
 
 
@@ -203,7 +207,8 @@ class ELO {
         await _204.waitForSelector("#loadMoreSR_All");
         await _204.click("#loadMoreSR_All");
         await _204.waitForSelector("ul.all-studyroutes");
-        console.log("[ELO] Courses loaded");
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        if (VERBOSE) console.log("[ELO] Courses loaded");
 
         // Structure and save
         const list = await _204.$$(".all-studyroutes > li");
@@ -214,8 +219,11 @@ class ELO {
           const id = parseInt($("li").attr("data-srid"));
           const code = $("li .thumb-item-code").text();
           const property = $("li .thumb-item-img[style]").css("background-image");
-          const thumbnailURL = "https://elo.windesheim.nl" + property.split("url('")[1].split("')")[0];
-          const data = await download({ cookie, url: thumbnailURL, base64: true });
+          var data = null;
+          if (property) {
+            const thumbnailURL = "https://elo.windesheim.nl" + property.split("url('")[1].split("')")[0];
+            data = await download({ cookie, url: thumbnailURL, base64: true });
+          }
           thumbnailData.push({ id, code, data });
         }
 
@@ -286,7 +294,7 @@ ELO.scanFileStructure = function (context, cookie, courseCode, pwd) {
               // Mongo 2
               const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
               const dbo = db.db(environment.dbmsName);
-              await dbo.collection("files").updateOne({ _id: file._id }, { $set: { file_extension: type.subtype, file_size: bytes, file_data: data } });
+              await dbo.collection("files").updateOne({ _id: file._id }, { $set: { file_extension: type.subtype, file_size: bytes, file_data: data, course_code: courseCode } });
               db.close();
 
               if (bytes) {

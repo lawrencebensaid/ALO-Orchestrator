@@ -1,8 +1,12 @@
-import httpRequest from "request-promise-native";
-import Cache from "./Cache";
-import fs from "fs";
-import { v4 as UUID } from "uuid";
+import httpRequest from "request-promise-native"
+import Cache from "./Cache"
+import fs from "fs"
+import { v4 as UUID } from "uuid"
+import { config } from "dotenv"
 
+
+config();
+const { VERBOSE } = process.env;
 
 class Util {
 
@@ -46,7 +50,7 @@ export async function download(options) {
       if (fileStream) {
         message += ` (${fileStream.bytesWritten})`;
       }
-      console.log(message);
+      if (VERBOSE) console.log(message);
       resolve(base64 ? Buffer.from(data).toString("base64") : data);
     });
     request.on("error", (error) => {

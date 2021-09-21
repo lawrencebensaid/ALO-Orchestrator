@@ -1,6 +1,6 @@
 {
   "name": "alo-api",
-  "version": "0.15.6",
+  "version": "0.15.7",
   "main": "src/main.js",
   "author": "Lawrence Bensaid",
   "description": "ALO API",

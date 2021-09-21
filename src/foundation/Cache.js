@@ -29,6 +29,14 @@ Cache.clear = () => {
 
 
 /**
+ * Empties/Clears the persistent cache.
+ */
+Cache.shred = (container) => {
+  fs.rmSync(Cache.containerURI(container));
+};
+
+
+/**
  * @returns {String} Cache URI.
  */
 Cache.cacheURI = () => {

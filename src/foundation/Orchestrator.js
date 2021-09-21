@@ -166,7 +166,7 @@ class Orchestrator {
    * @see Task
    * 
    * @param {String} id Identifier OR key of a task
-   * @returns {Task}
+   * @returns {Task?}
    */
   getTask(id) {
     const task = this.tasks[id];
@@ -177,6 +177,27 @@ class Orchestrator {
         const task = this.tasks[taskId];
         console.log(`getTask(${id})`, task.key);
         if (task.key === id) return task;
+      }
+    }
+  }
+
+
+  /**
+   * @description Returns a specific job if it exists.
+   * @see Job
+   * 
+   * @param {String} id Identifier OR key of a job
+   * @returns {Job?}
+   */
+  getJob(id) {
+    const job = this.jobs[id];
+    if (job) {
+      return job;
+    } else {
+      for (const jobId in this.jobs) {
+        const job = this.jobs[jobId];
+        console.log(`getJob(${id})`, job.key);
+        if (job.key === id) return job;
       }
     }
   }

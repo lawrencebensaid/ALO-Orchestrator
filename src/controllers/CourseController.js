@@ -7,6 +7,11 @@ import fs from "fs";
 import Course from "../models/Course";
 import Task from "../foundation/Task";
 import Job from "../foundation/Job";
+import { config } from "dotenv"
+
+
+config();
+const { VERBOSE } = process.env;
 
 
 /**
@@ -54,7 +59,7 @@ class CourseController {
             coursesDone += 1;
             continue;
           }
-          
+
           course = {
             course_code: course.abbr,
             course_name: course.name,
@@ -67,7 +72,7 @@ class CourseController {
           const percentage = coursesDone / courseIDs.length;
           const elapsed = new Date().valueOf() / 1000 - startTime;
           const estimation = elapsed / percentage;
-          console.log(`Updated course '${courseId}'. [ total: ${coursesDone}; progress: ${(percentage * 100).toFixed(2)}% (${coursesDone}/${courseIDs.length}); estimation: ${(elapsed / 60).toFixed()}/${(estimation / 60).toFixed()} minutes ]`);
+          if (VERBOSE) console.log(`Updated course '${courseId}'. [ total: ${coursesDone}; progress: ${(percentage * 100).toFixed(2)}% (${coursesDone}/${courseIDs.length}); estimation: ${(elapsed / 60).toFixed()}/${(estimation / 60).toFixed()} minutes ]`);
           update(percentage);
           await new Promise((resolve, reject) => { setTimeout(resolve, 250) });
         }
@@ -93,7 +98,50 @@ class CourseController {
       return true;
     });
 
-    job.trigger();
+    const task2 = new Task({
+      key: "course/*/elo-index",
+      message: "Running course ELO-index update (all)",
+      timeout: 1000 * 60 * 60 // Terminate Task after 60 minutes.
+    }, async ({ update, succeed, fail }) => {
+      const { 0: { username, password } } = Cache.get("elo-index-credentials");
+
+      try {
+        const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
+        const dbo = db.db(environment.dbmsName);
+
+        var coursesDone = 0;
+
+        const metadata = await new ELO(username, password).fetchCourseMetadata();
+        for (const data of metadata) {
+          const percentage = coursesDone / metadata.length;
+          await dbo.collection("courses").updateOne({ course_code: data.code }, {
+            $set: { course_eloid: data.id, course_thumbnail: data.data }
+          }, { upsert: true });
+          coursesDone += 1;
+          update(percentage);
+        }
+        db.close();
+        Cache.shred("elo-index-credentials");
+        succeed();
+      } catch (error) {
+        fail(error.message || null);
+      }
+
+    });
+
+    const job2 = new Job({ task: task2, key: "course/*/elo-index", interval: 1000 * 60 * 24 }); // Interval of 1 day.
+    orchestrator.setJob(job2, () => {
+
+      const existingTask = orchestrator.getTask("course/*/elo-index");
+      const isUpdating = existingTask ? existingTask.isRunning() : false;
+
+      if (isUpdating) {
+        console.log("An update is already in progress.");
+        return false;
+      }
+
+      return true;
+    });
   }
 
 
@@ -125,16 +173,12 @@ class CourseController {
 
       resolve(courses);
 
-      try {
-        const metadata = await new ELO(username, password).fetchCourseMetadata();
-        for (const data of metadata) {
-          await dbo.collection("courses").updateOne({ course_code: data.code }, {
-            $set: { course_eloid: data.id, course_thumbnail: data.data }
-          }, { upsert: true });
-        }
-      } catch (error) {
-        console.log(error);
-      }
+      Cache.store("elo-index-credentials", { username, password });
+
+      let job1 = orchestrator.getJob("course/*");
+      if (job1 instanceof Job) job1.trigger();
+      let job2 = orchestrator.getJob("course/*/elo-index");
+      if (job2 instanceof Job) job2.trigger();
 
     } catch (error) {
       console.log(error);
@@ -285,7 +329,7 @@ class CourseController {
     const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
     const dbo = db.db(environment.dbmsName);
     const course = await dbo.collection("courses").findOne({ course_code: id });
-    
+
     db.close();
 
     Cache.validate();
