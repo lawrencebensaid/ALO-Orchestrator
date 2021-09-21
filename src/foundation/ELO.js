@@ -227,7 +227,7 @@ class ELO {
             const thumbnailURL = "https://elo.windesheim.nl" + property.split("url('")[1].split("')")[0];
             data = await download({ cookie, url: thumbnailURL, base64: true });
           }
-          update(i / list.length / .5 + .25);
+          update((i / list.length) * .75 + .25);
           thumbnailData.push({ id, code, data });
         }
 
