@@ -169,7 +169,7 @@ class ELO {
    * 
    * @returns {Promise<[Object]>}
    */
-  async fetchCourseMetadata() {
+  async fetchCourseMetadata({ onUpdate: update }) {
     return new Promise(async (resolve, reject) => {
       try {
         const browser = await puppeteer.launch({ headless: !environment.debug, defaultViewport: null, args: ["--no-sandbox"] });
@@ -180,6 +180,7 @@ class ELO {
         await page.type("#passwordInput", this.password);
         await page.click("#submitButton");
         console.log("[ELO] Auth complete");
+        update(.05);
 
         // #tns
         var tns = await page.waitForSelector("#tns", { visible: true, timeout: 0 });
@@ -191,6 +192,7 @@ class ELO {
         // #_204 was renamed to #_207
         var _204 = await tns.waitForSelector("#_207", { visible: true, timeout: 0 });
         _204 = await _204.contentFrame();
+        update(.1);
 
         // Remove filters
         await _204.waitForSelector(".view-options a.dropdown-toggle");
@@ -200,13 +202,14 @@ class ELO {
         await _204.click(`.view-options .dropdown-menu li:first-child a[data-filteroption="1"]`);
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
+        update(.15);
         // Display all
         await _204.waitForSelector("#moreAll");
         await _204.click("#moreAll");
         await _204.waitForSelector("#loadMoreSR_All");
         await _204.click("#loadMoreSR_All");
         await _204.waitForSelector("ul.all-studyroutes");
+        update(.2);
         await new Promise((resolve) => setTimeout(resolve, 500));
         if (VERBOSE) console.log("[ELO] Courses loaded");
 
@@ -224,6 +227,7 @@ class ELO {
             const thumbnailURL = "https://elo.windesheim.nl" + property.split("url('")[1].split("')")[0];
             data = await download({ cookie, url: thumbnailURL, base64: true });
           }
+          update(i / list.length / .5 + .25);
           thumbnailData.push({ id, code, data });
         }
 

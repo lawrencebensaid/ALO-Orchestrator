@@ -111,7 +111,7 @@ class CourseController {
 
         var coursesDone = 0;
 
-        const metadata = await new ELO(username, password).fetchCourseMetadata();
+        const metadata = await new ELO(username, password).fetchCourseMetadata({ onUpdate: update });
         for (const data of metadata) {
           const percentage = coursesDone / metadata.length;
           await dbo.collection("courses").updateOne({ course_code: data.code }, {
