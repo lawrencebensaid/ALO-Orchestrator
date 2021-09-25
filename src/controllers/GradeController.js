@@ -28,7 +28,7 @@ class GradeController {
           course_code: course.abbr,
           course_name: course.name,
           course_points: course.ects,
-          course_description: course.description,
+          course_summary: course.description,
           study_isat: row.WH_study.isatcode
         };
 
@@ -43,7 +43,7 @@ class GradeController {
         grades[index] = {
           code: row.id,
           grade: parseFloat(row.grade) || row.grade || null,
-          description: row.description,
+          summary: row.description,
           courseName: course.name,
           courseCode: course.abbr,
           studyName: row.WH_study.description,

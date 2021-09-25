@@ -39,7 +39,7 @@ class StudyController {
             studies[index] = {
               study_code: study.id,
               study_name: study.crohonaam,
-              study_description: study.onderwijsproductnaam,
+              study_summary: study.onderwijsproductnaam,
               study_type: type,
               study_form: form,
               study_isat: study.isatcode,
@@ -58,7 +58,7 @@ class StudyController {
         studies[index] = {
           code: study.study_code,
           name: study.study_name,
-          description: study.study_description,
+          summary: study.study_summary,
           type: study.study_type,
           form: study.study_form,
           isat: study.study_isat
@@ -91,7 +91,7 @@ class StudyController {
           await dbo.collection("studies").insertOne({
             study_code: study.id,
             study_name: study.crohonaam,
-            study_description: study.onderwijsproductnaam,
+            study_summary: study.onderwijsproductnaam,
             study_type: type,
             study_form: form,
             study_isat: study.isatcode,
@@ -109,7 +109,7 @@ class StudyController {
       resolve({
         code: study.study_code,
         name: study.study_name,
-        description: study.study_description,
+        summary: study.study_summary,
         type: study.study_type,
         form: study.study_form,
         isat: study.study_isat
@@ -130,7 +130,7 @@ class StudyController {
       const search = new RegExp(query, "i");
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
       const dbo = db.db(environment.dbmsName);
-      const studies = await dbo.collection("studies").find({ $or: [{ study_code: { $regex: search } }, { study_name: { $regex: search } }, { study_description: { $regex: search } }] }).toArray();
+      const studies = await dbo.collection("studies").find({ $or: [{ study_code: { $regex: search } }, { study_name: { $regex: search } }, { study_summary: { $regex: search } }] }).toArray();
       db.close();
 
       // Format
@@ -138,7 +138,7 @@ class StudyController {
         array[i] = {
           code: row.study_code,
           name: row.study_name,
-          description: row.study_description,
+          summary: row.study_summary,
           type: row.study_type,
           form: row.study_form,
           isat: row.study_isat

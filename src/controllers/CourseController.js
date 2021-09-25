@@ -64,7 +64,7 @@ class CourseController {
             course_code: course.abbr,
             course_name: course.name,
             course_points: course.ects,
-            course_description: course.description
+            course_summary: course.description
           };
 
           await dbo.collection("courses").updateOne({ course_code: course.course_code }, { $set: course }, { upsert: true });
@@ -163,7 +163,7 @@ class CourseController {
             code: course.course_code,
             name: course.course_name,
             points: course.course_points,
-            description: course.course_description,
+            summary: course.course_summary,
             canUpdate: !!course.course_eloid,
             thumbnail: `/course/${course.course_code}/thumbnail`,
             filemap: course.course_filemap
@@ -218,7 +218,7 @@ class CourseController {
         code: course.course_code,
         name: course.course_name,
         points: course.course_points,
-        description: course.course_description,
+        summary: course.course_summary,
         thumbnail: `/course/${course.course_code}/thumbnail`,
         filemap: course.course_filemap
       });
@@ -259,7 +259,7 @@ class CourseController {
           code: row.course_code,
           name: row.course_name,
           points: row.course_points,
-          description: row.course_description,
+          summary: row.course_summary,
           thumbnail: `/course/${row.course_code}/thumbnail`
         }
       });
@@ -290,7 +290,7 @@ class CourseController {
               course_code: course.abbr,
               course_name: course.name,
               course_points: course.ects,
-              course_description: course.description
+              course_summary: course.description
             }
           }, { upsert: true });
         } catch (error) {
@@ -309,7 +309,7 @@ class CourseController {
         code: course.course_code,
         name: course.course_name,
         points: course.course_points,
-        description: course.course_description,
+        summary: course.course_summary,
         thumbnail: `/course/${course.course_code}/thumbnail`
       });
     } catch (error) {

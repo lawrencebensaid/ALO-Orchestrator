@@ -1,7 +1,6 @@
 {
   "endpoints": {
     "GET /": "AuthenticationController.status",
-    "GET /resource": { "AuthenticationController.resourceIndex": ["Auth"] },
     "GET /file/:id": { "AuthenticationController.file": ["Auth"] },
     "POST /auth": "AuthenticationController.authenticate",
     "GET /my/profile": { "AuthenticationController.myProfile": ["Auth"] },
@@ -12,6 +11,7 @@
     "PUT /my/group": { "GroupController.myUpdate": ["Auth"] },
     "GET /my/course": { "CourseController.myIndex": ["Auth"] },
     "GET /my/course/:id": { "CourseController.myShow": ["Auth"] },
+    "GET /my/resource": { "AuthenticationController.resourceIndex": ["Auth"] },
     "GET /my/schedule": { "EventController.mySchedule": ["Auth"] },
     "GET /my/schedule/ical": { "EventController.ical": ["Auth"] },
     "GET /course": "CourseController.index",

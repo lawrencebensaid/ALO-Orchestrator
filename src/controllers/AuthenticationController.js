@@ -56,7 +56,7 @@ class AuthenticationController {
     }
     const response = {
       message: "The service is functioning normally",
-      description: info.description,
+      summary: info.description,
       version: info.version,
       clients: {
         "AppStore (TestFlight)": "https://testflight.apple.com/join/2AV0dYfv"
@@ -123,7 +123,7 @@ class AuthenticationController {
           studyPhase,
           study: {
             code: study.id,
-            description: study.onderwijsproductnaam,
+            summary: study.onderwijsproductnaam,
             type: type,
             form: form,
             isat: study.isatcode,
@@ -218,7 +218,8 @@ class AuthenticationController {
         id: file._id,
         name: file.file_name,
         directory: file.file_directory,
-        extension: file.file_extension,
+        type: file.file_type,
+        subtype: file.file_subtype,
         size: file.file_size,
         course: {
           code: file.course_code
@@ -249,8 +250,8 @@ class AuthenticationController {
     // const data = file.file_data;
     const filename = file.file_name;
     Cache.validate();
-    const download = `${Cache.cacheURI()}/${file._id}.${file.file_extension}`;
-    response.set("Content-Type", `application/${file.file_extension}`);
+    const download = `${Cache.cacheURI()}/${file._id}.${file.file_subtype}`;
+    response.set("Content-Type", `application/${file.file_subtype}`);
     resolve({ filename, download });
   }
 

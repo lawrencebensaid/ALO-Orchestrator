@@ -272,8 +272,8 @@ ELO.scanFileStructure = function (context, cookie, courseCode, pwd) {
       // Mongo
       const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
       const dbo = db.db(environment.dbmsName);
-      const file = { file_name: name, file_directory: pwd, file_extension: type.subtype, course_code: courseCode };
-      const existingFile = await dbo.collection("files").findOne({ file_name: name, file_directory: pwd, file_extension: type.subtype });
+      const file = { file_name: name, file_directory: pwd, file_type: type.name, file_subtype: type.subtype, course_code: courseCode };
+      const existingFile = await dbo.collection("files").findOne({ file_name: name, file_directory: pwd, file_type: type.name, file_subtype: type.subtype });
       if (existingFile) {
         file._id = existingFile._id;
       } else {
@@ -298,13 +298,12 @@ ELO.scanFileStructure = function (context, cookie, courseCode, pwd) {
               // Mongo 2
               const db = await MongoClient.connect(environment.getDatabaseURI(), { useNewUrlParser: true, useUnifiedTopology: true });
               const dbo = db.db(environment.dbmsName);
-              await dbo.collection("files").updateOne({ _id: file._id }, { $set: { file_extension: type.subtype, file_size: bytes, file_data: data, course_code: courseCode } });
+              await dbo.collection("files").updateOne({ _id: file._id }, { $set: { file_type: type.name, file_subtype: type.subtype, file_size: bytes, file_data: data, course_code: courseCode } });
               db.close();
 
               if (bytes) {
                 item.size = bytes;
               }
-              item.path = `/file/${file._id}`;
               item.id = file._id;
               structure.push(item);
             } catch (error) {
