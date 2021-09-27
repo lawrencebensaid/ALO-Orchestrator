@@ -101,9 +101,12 @@ class ELO {
         const courseDiv = await _206.$eval(".detailintro", (element) => { return element.outerHTML; });
         const $courseDiv = cheerio.load(courseDiv);
         const property = $courseDiv("div.detailintro[style]").css("background-image");
-        const thumbnailURL = property.split("url('")[1].split("')")[0];
-        await download({ cookie, url: thumbnailURL, destination: ".thumbnails", filename: `${courseName}.${getFileExtension(thumbnailURL)}` });
-        const thumbnail = `/files/.thumbnails/${courseName}.${getFileExtension(thumbnailURL)}`;
+        var thumbnail = null;
+        if (property) {
+          const thumbnailURL = property.split("url('")[1].split("')")[0];
+          await download({ cookie, url: thumbnailURL, destination: ".thumbnails", filename: `${courseName}.${getFileExtension(thumbnailURL)}` });
+          thumbnail = `/files/.thumbnails/${courseName}.${getFileExtension(thumbnailURL)}`;
+        }
 
         // #widgetsiframe
         var wif = await _206.waitForSelector("#widgetsiframe", { visible: true, timeout: 0 });
